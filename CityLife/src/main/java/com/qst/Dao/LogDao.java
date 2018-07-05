@@ -20,7 +20,7 @@ import java.util.List;
 
 public class LogDao
 {
-    private final static String MYBATIS_CONFIG_XML_PATH = "log-config.xml";
+    private final static String MYBATIS_CONFIG_XML_PATH = "config-log.xml";
 
     public enum MapperID
     {

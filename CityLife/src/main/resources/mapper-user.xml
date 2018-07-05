@@ -15,17 +15,20 @@
     select
     <include refid="Base_Column_List" />
     from userinfo
+    where is_del = 0
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from userinfo
     where user_name = #{userName,jdbcType=NVARCHAR}
+    and is_del = 0
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from userinfo
+  <update id="deleteByPrimaryKey" parameterType="java.lang.String">
+    update userinfo
+    set is_del = 1
     where user_name = #{userName,jdbcType=NVARCHAR}
-  </delete>
+  </update>
   <insert id="insertSelective" parameterType="com.qst.model.UserModel">
     insert into userinfo
     <trim prefix="(" suffix=")" suffixOverrides=",">

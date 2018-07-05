@@ -2,9 +2,9 @@
  * Copyright (c) 2018
  * Author : Luoming Xu
  * Project Name : CityLife
- * File Name : UserDao.java
- * CreateTime: 2018/07/05 15:00:48
- * LastModifiedDate : 18-6-29 下午5:00
+ * File Name : InfosDao.java
+ * CreateTime: 2018/07/05 20:10:58
+ * LastModifiedDate : 18-7-5 下午8:10
  */
 
 package com.qst.Dao;
@@ -18,14 +18,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class UserDao
+public class InfosDao
 {
-    private final static String MYBATIS_CONFIG_XML_PATH = "config-user.xml";
+    private final static String MYBATIS_CONFIG_XML_PATH = "config-infos.xml";
 
     public enum MapperID
     {
-        selectAll,
-        selectByPrimaryKey,
+        //还需要添加几个模糊查询
+        selectByType,
         deleteByPrimaryKey,
         insertSelective,
         updateByPrimaryKeySelective
@@ -54,15 +54,7 @@ public class UserDao
         return null;
     }
 
-    /**
-     * connect DB get model
-     *
-     * @param mapperID   id in mapper.xml
-     * @param paramModel generics class which you could get data for you select statement
-     * @param <T>        generics class name
-     * @return model from DB
-     */
-    public static <T> List<T> getModel(MapperID mapperID, T paramModel)
+    public static <T> List<T> selectModel(InfosDao.MapperID mapperID, T paramModel)
     {
         List<T> models;
 
@@ -71,13 +63,11 @@ public class UserDao
             SqlSession session = getSession();
             if (session != null)
             {
+
                 switch (mapperID)
                 {
-                    case selectAll:
+                    case selectByType:
                         models = session.selectList(mapperID.toString());
-                        break;
-                    case selectByPrimaryKey:
-                        models = session.selectList(mapperID.toString(),paramModel);
                         break;
                     default:
                         throw new Exception("No suck choice in this method. ");
@@ -94,15 +84,7 @@ public class UserDao
         return null;
     }
 
-    /**
-     * operate db
-     *
-     * @param mapperID      id in mapper.xml
-     * @param paramModel    generics class which you could get data for you select statement
-     * @param <T>           generics class name
-     * @return              affected rows
-     */
-    public static <T> int setModel(MapperID mapperID, T paramModel)
+    public static <T> int setModel(InfosDao.MapperID mapperID, T paramModel)
     {
         int count = 0;
 
