@@ -1,5 +1,7 @@
-package com.qst.Dao;
+package com.qst.service;
 
+import com.qst.Dao.UserDao;
+import com.qst.model.InfosModel;
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
 import org.junit.jupiter.api.Test;
@@ -9,12 +11,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 /*
- * @description:
+ * @description: 后台处理
  * @program: CityLife
  * @author: syun
  * @create: 2018-07-05 18:59
  */
-public class ServereDao {
+public class ServerService {
 
 
     /**
@@ -58,6 +60,7 @@ public class ServereDao {
 
     /**
      * 查找用户信息
+     * 传入参为空时,查询所有
      * @return
      */
     public List<UserModel> selectUser(UserModel user){
@@ -65,6 +68,11 @@ public class ServereDao {
             return UserDao.getModel(UserDao.MapperID.selectAll, user);
         }
         return UserDao.getModel(UserDao.MapperID.selectByPrimaryKey, user);
+    }
+
+
+    public List<InfosModel> selectUser(){
+        return null;
     }
 
 

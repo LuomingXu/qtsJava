@@ -1,6 +1,6 @@
 package com.qst.controller;
 
-import com.qst.Dao.LoginDao;
+import com.qst.service.LoginService;
 import com.qst.model.UserModel;
 
 import java.util.Scanner;
@@ -64,7 +64,7 @@ public class Login {
         name = sc.nextLine();
         System.out.print("密码:");
         pwd = sc.nextLine();
-        UserModel user = new LoginDao().userServerLogin(name, pwd);
+        UserModel user = new LoginService().userServerLogin(name, pwd);
         if(user==null){
             System.out.println("登录失败,账号或密码错误!");
         }else {

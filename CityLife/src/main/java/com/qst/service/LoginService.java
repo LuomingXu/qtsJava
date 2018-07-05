@@ -1,4 +1,4 @@
-package com.qst.Dao;
+package com.qst.service;
 
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
@@ -13,7 +13,7 @@ import java.security.spec.InvalidKeySpecException;
  * @author: syun
  * @create: 2018-07-05 16:10
  */
-public class LoginDao {
+public class LoginService {
 
     /**
      *
@@ -24,7 +24,7 @@ public class LoginDao {
         UserModel user = new UserModel();
         user.setUserName(userName);
         boolean isSuccess=false;
-        UserModel  userSelected = new ServereDao().selectUser(user).get(0);
+        UserModel  userSelected = new ServerService().selectUser(user).get(0);
         try {
             if(userSelected==null){
                 return null;
@@ -46,7 +46,7 @@ public class LoginDao {
 
     @Test
     public void test(){
-        UserModel user= new LoginDao().userServerLogin("syun1","123");
+        UserModel user= new LoginService().userServerLogin("syun1","123");
         System.out.println("s");
     }
 

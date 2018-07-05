@@ -1,6 +1,6 @@
 package com.qst.controller;
 
-import com.qst.Dao.ServereDao;
+import com.qst.service.ServerService;
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.util.Scanner;
 public class Server {
 
 
-    private ServereDao servereDao = new ServereDao();
+    private ServerService serverService = new ServerService();
 
 
 
@@ -101,7 +101,7 @@ public class Server {
         System.out.print("昵称:");
         String nickName = sc.nextLine();
         newUser.setNickName(nickName);
-        if(servereDao.createUser(newUser)){
+        if(serverService.createUser(newUser)){
             System.out.println("注册成功");
         }
     }
@@ -115,7 +115,7 @@ public class Server {
         String name = sc.nextLine();
         UserModel user = new UserModel();
         user.setUserName(name);
-        List<UserModel> userList = servereDao.selectUser(user);
+        List<UserModel> userList = serverService.selectUser(user);
         for(UserModel temp:userList){
             System.out.println(temp.toString());
         }
@@ -126,7 +126,7 @@ public class Server {
      */
     public void searchUsers(){
         UserModel user = new UserModel();
-        List<UserModel> userList = servereDao.selectUser(user);
+        List<UserModel> userList = serverService.selectUser(user);
         for(UserModel temp:userList){
             System.out.println(temp.toString());
         }
@@ -137,7 +137,7 @@ public class Server {
      */
     public void updateUser() {
         UserModel user = new UserModel();
-        System.out.print("输入需要给修改的用户的姓名");
+        System.out.print("输入需要给修改的用户的姓名:");
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
         System.out.print("新密码");
@@ -149,7 +149,7 @@ public class Server {
         user.setNickName(nickName);
         user.setPassword(pwd);
 
-        if(servereDao.updateUser(user)){
+        if(serverService.updateUser(user)){
             System.out.println("更新成功");
         }else {
             System.out.println("更新失败,请检查操作");
@@ -165,7 +165,7 @@ public class Server {
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
         user.setUserName(name);
-        if(servereDao.deleteUser(user)){
+        if(serverService.deleteUser(user)){
             System.out.println("删除成功");
         }else {
             System.out.println("删除失败,请检查操作!");
