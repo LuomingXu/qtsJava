@@ -21,12 +21,6 @@
     delete from userinfo
     where user_name = #{userName,jdbcType=NVARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.qst.model.UserModel">
-    insert into userinfo (user_name, password, nick_name,
-      createtime, is_del)
-    values (#{userName,jdbcType=NVARCHAR}, #{password,jdbcType=NVARCHAR}, #{nickName,jdbcType=NVARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=INTEGER})
-  </insert>
   <insert id="insertSelective" parameterType="com.qst.model.UserModel">
     insert into userinfo
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,14 +74,6 @@
         is_del = #{isDel,jdbcType=INTEGER},
       </if>
     </set>
-    where user_name = #{userName,jdbcType=NVARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.qst.model.UserModel">
-    update userinfo
-    set password = #{password,jdbcType=NVARCHAR},
-      nick_name = #{nickName,jdbcType=NVARCHAR},
-      createtime = #{createtime,jdbcType=TIMESTAMP},
-      is_del = #{isDel,jdbcType=INTEGER}
     where user_name = #{userName,jdbcType=NVARCHAR}
   </update>
 </mapper>

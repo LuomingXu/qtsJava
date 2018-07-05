@@ -22,29 +22,24 @@ public class UserDao
 {
     private final static String MYBATIS_CONFIG_XML_PATH = "user-config.xml";
 
-    /**
-     * connect DB get model
-     *
-     * @param mapperID   id in mapper.xml
-     * @param paramModel generics class which you could get data for you select statement
-     * @param <T>        generics class name
-     * @return model from DB
-     */
-    public static <T> List<T> getModel(String mapperID, T paramModel) throws NullPointerException
+    public enum MapperID
     {
-        List<T> models;
+        selectByPrimaryKey,
+        deleteByPrimaryKey,
+        insertSelective,
+        updateByPrimaryKeySelective
+    }
 
+    private static SqlSession getSession()
+    {
         try
         {
             //load mybatis config
             InputStream inputStream = Resources.getResourceAsStream(MYBATIS_CONFIG_XML_PATH);
 
             SqlSessionFactory ssf = new SqlSessionFactoryBuilder().build(inputStream);
-            SqlSession session = ssf.openSession();
 
-            models = session.selectList(mapperID, paramModel);
-
-            return models;
+            return ssf.openSession();
         }
         catch (IOException e)
         {
@@ -56,5 +51,84 @@ public class UserDao
         }
 
         return null;
+    }
+
+    /**
+     * connect DB get model
+     *
+     * @param mapperID   id in mapper.xml
+     * @param paramModel generics class which you could get data for you select statement
+     * @param <T>        generics class name
+     * @return model from DB
+     */
+    public static <T> List<T> getModel(MapperID mapperID, T paramModel)
+    {
+        List<T> models;
+        System.out.println(mapperID.toString());
+        try
+        {
+            SqlSession session = getSession();
+            if (session != null)
+            {
+                models=session.selectList(mapperID.toString(),paramModel);
+                return models;
+            }
+        }
+        catch (Exception ee)
+        {
+            ee.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * operate db
+     *
+     * @param mapperID      id in mapper.xml
+     * @param paramModel    generics class which you could get data for you select statement
+     * @param <T>           generics class name
+     * @return              affected rows
+     */
+    public static <T> int setModel(MapperID mapperID, T paramModel)
+    {
+        int count = 0;
+        System.out.println(mapperID.toString());
+        try
+        {
+            SqlSession session = getSession();
+
+            if (session != null)
+            {
+                switch (mapperID)
+                {
+                    case updateByPrimaryKeySelective:
+                        count = session.update(mapperID.toString(), paramModel);
+                        break;
+                    case deleteByPrimaryKey:
+                        count = session.delete(mapperID.toString(), paramModel);
+                        break;
+                    case insertSelective:
+                        count = session.insert(mapperID.toString(), paramModel);
+                        break;
+                    default:
+                        throw new Exception("No suck choice in this method. ");
+                }
+
+                //operation could be done, then commit
+                if (count > 0)
+                    session.commit();
+                else
+                    throw new Exception("Operation could't be done. ");
+            }
+
+            return count;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }

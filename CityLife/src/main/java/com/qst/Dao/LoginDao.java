@@ -24,7 +24,7 @@ public class LoginDao {
         UserModel user = new UserModel();
         user.setUserName(userName);
         boolean isSuccess=false;
-        user = UserDao.getModel("selectByPrimaryKey",user).get(0);
+        user = UserDao.getModel(UserDao.MapperID.selectByPrimaryKey,user).get(0);
         try {
             isSuccess= PwdUtil.validatePassword(pwd,user.getPassword());
         } catch (NoSuchAlgorithmException e) {
