@@ -33,6 +33,13 @@ public class mian
 //            e.printStackTrace();
 //        }
 
+        lists = UserDao.getModel(UserDao.MapperID.selectAll, null);
+
+        for (UserModel item : lists)
+        {
+            System.out.println(item);
+        }
+
         try
         {
             LogModel model1 = new LogModel();

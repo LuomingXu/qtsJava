@@ -24,6 +24,7 @@ public class UserDao
 
     public enum MapperID
     {
+        selectAll,
         selectByPrimaryKey,
         deleteByPrimaryKey,
         insertSelective,
@@ -70,7 +71,18 @@ public class UserDao
             SqlSession session = getSession();
             if (session != null)
             {
-                models=session.selectList(mapperID.toString(),paramModel);
+                switch (mapperID)
+                {
+                    case selectAll:
+                        models = session.selectList(mapperID.toString());
+                        break;
+                    case selectByPrimaryKey:
+                        models = session.selectList(mapperID.toString(),paramModel);
+                        break;
+                    default:
+                        throw new Exception("No suck choice in this method. ");
+                }
+
                 return models;
             }
         }
