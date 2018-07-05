@@ -2,9 +2,9 @@
  * Copyright (c) 2018
  * Author : Luoming Xu
  * Project Name : CityLife
- * File Name : UserDao.java
- * CreateTime: 2018/07/05 15:00:48
- * LastModifiedDate : 18-6-29 下午5:00
+ * File Name : LogDao.java
+ * CreateTime: 2018/07/05 19:04:49
+ * LastModifiedDate : 18-7-5 下午7:04
  */
 
 package com.qst.Dao;
@@ -18,16 +18,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class UserDao
+public class LogDao
 {
-    private final static String MYBATIS_CONFIG_XML_PATH = "user-config.xml";
+    private final static String MYBATIS_CONFIG_XML_PATH = "log-config.xml";
 
     public enum MapperID
     {
-        selectByPrimaryKey,
-        deleteByPrimaryKey,
-        insertSelective,
-        updateByPrimaryKeySelective
+        selectAll,
+        selectByDeletedUsername,
+        insertSelective
     }
 
     private static SqlSession getSession()
@@ -61,7 +60,7 @@ public class UserDao
      * @param <T>        generics class name
      * @return model from DB
      */
-    public static <T> List<T> getModel(MapperID mapperID, T paramModel)
+    public static <T> List<T> selectModel(LogDao.MapperID mapperID, T paramModel)
     {
         List<T> models;
 
@@ -70,7 +69,19 @@ public class UserDao
             SqlSession session = getSession();
             if (session != null)
             {
-                models=session.selectList(mapperID.toString(),paramModel);
+
+                switch (mapperID)
+                {
+                    case selectAll:
+                        models = session.selectList(mapperID.toString());
+                        break;
+                    case selectByDeletedUsername:
+                        models = session.selectList(mapperID.toString(),paramModel);
+                        break;
+                    default:
+                        throw new Exception("No suck choice in this method. ");
+                }
+
                 return models;
             }
         }
@@ -90,7 +101,7 @@ public class UserDao
      * @param <T>           generics class name
      * @return              affected rows
      */
-    public static <T> int setModel(MapperID mapperID, T paramModel)
+    public static <T> int insertModel(LogDao.MapperID mapperID, T paramModel)
     {
         int count = 0;
 
@@ -98,29 +109,16 @@ public class UserDao
         {
             SqlSession session = getSession();
 
-            if (session != null)
+            if (session != null && mapperID == MapperID.insertSelective)
             {
-                switch (mapperID)
-                {
-                    case updateByPrimaryKeySelective:
-                        count = session.update(mapperID.toString(), paramModel);
-                        break;
-                    case deleteByPrimaryKey:
-                        count = session.delete(mapperID.toString(), paramModel);
-                        break;
-                    case insertSelective:
-                        count = session.insert(mapperID.toString(), paramModel);
-                        break;
-                    default:
-                        throw new Exception("No suck choice in this method. ");
-                }
-
-                //operation could be done, then commit
-                if (count > 0)
-                    session.commit();
-                else
-                    throw new Exception("Operation could't be done. ");
+                count = session.insert(mapperID.toString(), paramModel);
             }
+
+            //operation could be done, then commit
+            if (count > 0)
+                session.commit();
+            else
+                throw new Exception("Operation could't be done. ");
 
             return count;
         }
