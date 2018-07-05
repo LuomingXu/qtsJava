@@ -24,9 +24,12 @@ public class LoginDao {
         UserModel user = new UserModel();
         user.setUserName(userName);
         boolean isSuccess=false;
-        user = UserDao.getModel(UserDao.MapperID.selectByPrimaryKey,user).get(0);
+        UserModel  userSelected = new ServereDao().selectUser(user).get(0);
         try {
-            isSuccess= PwdUtil.validatePassword(pwd,user.getPassword());
+            if(userSelected==null){
+                return null;
+            }
+            isSuccess= PwdUtil.validatePassword(pwd,userSelected.getPassword());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
@@ -35,7 +38,7 @@ public class LoginDao {
         System.out.println(user.toString());
 
         if(isSuccess){
-            return user;
+            return userSelected;
         }
         return null;
     }
@@ -43,7 +46,8 @@ public class LoginDao {
 
     @Test
     public void test(){
-        new LoginDao().userServerLogin("123","123");
+        UserModel user= new LoginDao().userServerLogin("syun1","123");
+        System.out.println("s");
     }
 
 

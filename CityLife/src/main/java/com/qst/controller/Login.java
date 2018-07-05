@@ -1,5 +1,8 @@
 package com.qst.controller;
 
+import com.qst.Dao.LoginDao;
+import com.qst.model.UserModel;
+
 import java.util.Scanner;
 
 /*
@@ -15,7 +18,6 @@ public class Login {
         System.out.println("\t--------------------------");
         System.out.println("\t-        欢迎登陆本系统                    -");
         System.out.println("\t--------------------------");
-
         System.out.println("请您先登陆模式");
         System.out.println("请选择登录模式：1.前台查看\t2.登陆后台\t\t3.退出");
         Scanner in = new Scanner(System.in);
@@ -27,41 +29,24 @@ public class Login {
          */
 //        Index index = new Index();
 //        Server main = new Server();
-        switch (chooseNum) {
-            case 1:// 登陆前台
-                System.out.println("---欢迎进入本系统前台！---");
-                new Index().start();
-                break;
-            case 2:// 登陆后台
-                mainLogin();
-
-
-
-//                User user = new User();
-//                do {
-//                    // 进去登陆后台方法
-//                    user = main.login();
-//                    if (user != null) {
-//                        //后台选项循环操作
-//                        while (true) {
-//                            System.out.println();
-//                            System.out.println("-----欢迎 " + user.getUser_name() + " 登陆本系统！！！-----");
-//                            globalUser = user.getUser_name();
-//                            main.startBack();
-//                        }
-//                    } else {
-//                        System.out.println("您登陆有误，请检查用户名和密码！");
-//                    }
-//                } while (user == null);
-//                break;
-            case 3:// 退出程序
-//                System.out.println("-----   欢迎您再次使用本系统      -----");
-//                System.exit(0);
-                break;
-            default:
-                System.out.println("请您输入有效的选项！");
-                break;
+        while (chooseNum!=3){
+            switch (chooseNum) {
+                case 1:// 登陆前台
+                    System.out.println("---欢迎进入本系统前台！---");
+                    new Index().start();
+                    break;
+                case 2:// 登陆后台
+                    mainLogin();
+                case 3:// 退出程序
+                    System.out.println("-----   欢迎您再次使用本系统      -----");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("请您输入有效的选项！");
+                    break;
+            }
         }
+
     }
 
 
@@ -71,6 +56,21 @@ public class Login {
      */
     public boolean mainLogin(){
 
+        String name = new String();
+        String pwd = new String();
+
+        System.out.print("用户名:");
+        Scanner sc = new Scanner(System.in);
+        name = sc.nextLine();
+        System.out.print("密码:");
+        pwd = sc.nextLine();
+        UserModel user = new LoginDao().userServerLogin(name, pwd);
+        if(user==null){
+            System.out.println("登录失败,账号或密码错误!");
+        }else {
+            System.out.println("用户:" + user.getNickName() + "登录成功");
+            new Server().startBack();
+        }
 
         return true;
     }
