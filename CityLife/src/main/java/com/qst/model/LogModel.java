@@ -9,6 +9,7 @@
 
 package com.qst.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LogModel
@@ -66,6 +67,7 @@ public class LogModel
 
     public String logFormat()
     {
-        return String.format("%s#%s#%s#%s", id, deleteDate, deletedUsername, deletedBy);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        return String.format("%s#%s#%s#%s", id, sdf.format(deleteDate), deletedUsername, deletedBy);
     }
 }
