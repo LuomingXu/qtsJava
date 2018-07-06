@@ -2,7 +2,9 @@ package com.qst.utils;
 
 import com.qst.model.LogModel;
 import com.qst.Dao.DAO;
+import sun.rmi.runtime.Log;
 
+import javax.print.attribute.standard.RequestingUserName;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +23,18 @@ public class LogUtils {
         return String.format("C:\\Users\\%s\\Desktop\\qstlog.txt",System.getenv().get("USERNAME"));
     }
 
-    /**
-     * 读取文件中的日志
-     * @return 日志
-     */
-    public static List<String> getLogLists()
+    public static void main(String[] args)
     {
-       List<String> logLists;
-       logLists=logRead(getFilePath());
-        if(logLists!=null){
+        List<String> logs=logRead(getFilePath());
 
-            return logLists;
-        }else{
-            logWrite();
-            logLists=logRead(getFilePath());
+        if (logs != null)
+        {
+            for (String item : logs)
+            {
+                System.out.println(item);
+            }
         }
-        return logLists;
+
     }
 
     /**
@@ -44,48 +42,60 @@ public class LogUtils {
      * @param srcFile 文件目录
      * @return 文件所含内容
      */
-    private static List<String> logRead(String srcFile){
-             FileInputStream fis=null;
-             BufferedReader br=null;
-             List<String> logs=new ArrayList<String>();
-             try {
-
-                 br = new BufferedReader(new FileReader(srcFile));
-
-             try {
-                 String temp=null;
-                while ((temp=br.readLine() )!=null) {
-
-
-                    logs.add(temp);
-                }
-
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-           }catch (FileNotFoundException e) {
-          e.printStackTrace();
-       }
-           finally {
+    public static List<String> logRead(String srcFile)
+    {
+        BufferedReader br = null;
+        List<String> logs = new ArrayList<String>();
+        File file = new File(getFilePath());
+        if (file.exists())
+        {
             try {
-               br.close();
 
-            } catch (IOException e) {
-               e.printStackTrace();
-           }
+                br = new BufferedReader(new FileReader(srcFile));
+
+                try {
+                    String temp;
+                    while ((temp = br.readLine()) != null) {
+                        logs.add(temp);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    br.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        else
+        {
+            logs=logWrite();
+        }
+
         return logs;
     }
-
 
     /**
      *将数据库的操作日志读取写入到本地文件中
      */
-    private static void logWrite(){
+    private static List<String> logWrite(){
 
-         List<LogModel> logModels;
-         logModels=DAO.getModel(DAO.TableName.deleteLog,DAO.LogMapperID.selectAll.toString(),new LogModel());
-         File file=new File(getFilePath());
+        List<LogModel> logModels;
+        List<String> logs=new ArrayList<String>();
+        logModels=DAO.getModel(DAO.TableName.deleteLog,DAO.LogMapperID.selectAll.toString(),new LogModel());
+
+        for (LogModel item: logModels)
+        {
+            logs.add(item.logFormat());
+        }
+
+        File file=new File(getFilePath());
 
         try {
             file.createNewFile();
@@ -116,5 +126,7 @@ public class LogUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return logs;
     }
 }
