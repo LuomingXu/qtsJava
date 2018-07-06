@@ -2,9 +2,7 @@ package com.qst.utils;
 
 import com.qst.model.LogModel;
 import com.qst.Dao.DAO;
-import sun.rmi.runtime.Log;
 
-import javax.print.attribute.standard.RequestingUserName;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,26 +21,11 @@ public class LogUtils {
         return String.format("C:\\Users\\%s\\Desktop\\qstlog.txt",System.getenv().get("USERNAME"));
     }
 
-    public static void main(String[] args)
-    {
-        List<String> logs=logRead(getFilePath());
-
-        if (logs != null)
-        {
-            for (String item : logs)
-            {
-                System.out.println(item);
-            }
-        }
-
-    }
-
     /**
      * 读取本地日志文件
-     * @param srcFile 文件目录
      * @return 文件所含内容
      */
-    public static List<String> logRead(String srcFile)
+    public static List<String> logRead()
     {
         BufferedReader br = null;
         List<String> logs = new ArrayList<String>();
@@ -51,7 +34,7 @@ public class LogUtils {
         {
             try {
 
-                br = new BufferedReader(new FileReader(srcFile));
+                br = new BufferedReader(new FileReader(getFilePath()));
 
                 try {
                     String temp;
