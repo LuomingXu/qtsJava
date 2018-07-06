@@ -19,17 +19,22 @@ public class Login{
 
         this.user=user;
 
-        System.out.println("\t--------------------------");
-        System.out.println("\t-        欢迎登陆本系统                    -");
-        System.out.println("\t--------------------------");
-        System.out.println("请您先登陆模式");
-        System.out.println("请选择登录模式：1.前台查看\t2.登陆后台\t\t3.退出");
-        Scanner in = new Scanner(System.in);
-        int chooseNum = in.nextInt();
+
+        int chooseNum=-1;
 
 
 
         while (chooseNum!=3){
+
+            System.out.println("\t--------------------------");
+            System.out.println("\t-        欢迎登陆本系统                    -");
+            System.out.println("\t--------------------------");
+            System.out.println("请您先登陆模式");
+            System.out.println("请选择登录模式：1.前台查看\t2.登陆后台\t\t3.退出");
+            Scanner in = new Scanner(System.in);
+
+            chooseNum = in.nextInt();
+
             switch (chooseNum) {
                 case 1:// 登陆前台
                     System.out.println("---欢迎进入本系统前台！---");
@@ -37,6 +42,7 @@ public class Login{
                     break;
                 case 2:// 登陆后台
                     mainLogin();
+                    break;
                 case 3:// 退出程序
                     System.out.println("-----   欢迎您再次使用本系统      -----");
                     System.exit(0);
@@ -74,7 +80,6 @@ public class Login{
 
         if(user==null){
             System.out.println("登录失败,账号或密码错误!");
-
         }else {
             System.out.println("用户: " + user.getNickName() + "登录成功");
             new Server().startBack(user);

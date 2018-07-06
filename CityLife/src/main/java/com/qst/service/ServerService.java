@@ -54,8 +54,13 @@ public class ServerService {
      * @return
      */
     public boolean deleteUser(UserModel user){
-        if (DAO.setModel(DAO.TableName.userinfo, DAO.UserMapperID.deleteByPrimaryKey.toString(), user) > 0) {
-            return true;
+        try {
+            if (DAO.setModel(DAO.TableName.userinfo, DAO.UserMapperID.deleteByPrimaryKey.toString(), user) > 0) {
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            System.out.println("查无此人!");
         }
         return false;
     }

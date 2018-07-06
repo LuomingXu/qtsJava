@@ -1,6 +1,8 @@
 package com.qst.controller;
 
 import com.qst.model.InfosModel;
+import com.qst.model.LogModel;
+import com.qst.service.LogService;
 import com.qst.service.ServerService;
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
@@ -8,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,15 +26,18 @@ public class Server {
 
     private ServerService serverService = new ServerService();
 
+    private LogService logService = new LogService();
 
+    private UserModel nowUser ;
 
     /**
      * 后台能够操作的菜单(实现的功能)
      */
     public void startBack(UserModel user) {
         int chooseNum = 0;
-
+        nowUser=user;
         while(chooseNum!=-1){
+            System.out.println("-------------------------------------------------");
             System.out.println("请选择后台如下操作：");
             System.out.println("1.注册用户		 6.添加发布信息");
             System.out.println("2.查询用户		 7.查询后台所有信息");
@@ -38,6 +45,8 @@ public class Server {
             System.out.println("4.删除用户		 9.设置信息");
             System.out.println("5.显示删除日志	10.删除信息");
             System.out.println("---按0返回上一级---");
+            System.out.println("-------------------------------------------------");
+
             Scanner in = new Scanner(System.in);
             chooseNum = in.nextInt();
 
@@ -107,11 +116,11 @@ public class Server {
         UserModel newUser = new UserModel();
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("账号:");
+        System.out.print("账号: ");
         String name = sc.nextLine();
         newUser.setUserName(name);
 
-        System.out.print("密码");
+        System.out.print("密码: ");
         String pwd = sc.nextLine();
         try {
             newUser.setPassword(PwdUtil.createHash(pwd));
@@ -121,7 +130,7 @@ public class Server {
             e.printStackTrace();
         }
 
-        System.out.print("昵称:");
+        System.out.print("昵称: ");
         String nickName = sc.nextLine();
         newUser.setNickName(nickName);
         if(serverService.createUser(newUser)){
@@ -139,8 +148,15 @@ public class Server {
         UserModel user = new UserModel();
         user.setUserName(name);
         List<UserModel> userList = serverService.selectUser(user);
+
+        if(userList.size()==0){
+            System.out.println("无此信息!");
+            return;
+        }
         for(UserModel temp:userList){
-            System.out.println("账号: "+temp.getUserName()+"\t昵称: "+temp.getNickName()+"\t 创建日期"+temp.getCreatetime());
+
+            String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(temp.getCreatetime());
+            System.out.println("账号: " + temp.getUserName() + "\t昵称: " + temp.getNickName() + "\t 创建日期: " + date);
 //            System.out.println(temp.toString());
         }
     }
@@ -151,8 +167,13 @@ public class Server {
     public void searchUsers(){
         UserModel user = new UserModel();
         List<UserModel> userList = serverService.selectUser(user);
+        if(userList.size()==0){
+            System.out.println("无此信息!");
+            return;
+        }
         for(UserModel temp:userList){
-            System.out.println("账号: "+temp.getUserName()+"\t昵称: "+temp.getNickName()+"\t 创建日期"+temp.getCreatetime());
+            String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(temp.getCreatetime());
+            System.out.println("账号: "+temp.getUserName()+"\t昵称: "+temp.getNickName()+"\t 创建日期: "+date);
 //            System.out.println(temp.toString());
         }
     }
@@ -165,15 +186,17 @@ public class Server {
         System.out.print("输入需要给修改的用户的姓名:");
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
-        System.out.print("新密码");
+        System.out.print("新密码: ");
         String pwd = sc.nextLine();
-        System.out.print("新昵称");
+        System.out.print("新昵称: ");
         String nickName = sc.nextLine();
 
         user.setUserName(name);
         user.setNickName(nickName);
         user.setPassword(pwd);
-
+        if(!UserIsExist(user)){
+            return;
+        }
         if(serverService.updateUser(user)){
             System.out.println("更新成功");
         }else {
@@ -190,13 +213,31 @@ public class Server {
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
         user.setUserName(name);
+        if(!UserIsExist(user)){
+           return;
+        }
         if(serverService.deleteUser(user)){
             System.out.println("删除成功");
+            LogModel log = new LogModel();
+            log.setDeletedUsername(user.getUserName());
+            log.setDeletedBy(nowUser.getUserName());
+            if(logService.addLog(log)){
+                System.out.println("添加日志成功!");
+            }else {
+                System.out.println("添加日志失败!");
+            }
         }else {
             System.out.println("删除失败,请检查操作!");
         }
     }
 
+    public boolean UserIsExist(UserModel user){
+        if(serverService.selectUser(user).size()==0){
+            System.out.println("查无此人!");
+            return false;
+        }
+        return true;
+    }
 
 
     /**
@@ -210,6 +251,10 @@ public class Server {
         String type = sc.nextLine();
         info.setType(type);
         List<InfosModel> Infos = serverService.selectInfo(info);
+        if(Infos.size()==0){
+            System.out.println("无此信息!");
+            return;
+        }
         for (InfosModel temp : Infos) {
             System.out.println("信息ID:" + temp.getId() + "\t信息类别：" + temp.getType() + "\t标题："
                     + temp.getTitle() + "\t内容：" + temp.getContent() + "\t联系人:" + temp.getLinkman()
@@ -309,6 +354,10 @@ public class Server {
 
         info.setId(id);
 
+//        判断时候需要修改的记录是否在数据库中
+        if(!InfoIsExit(info)){
+            return;
+        }
         if(serverService.updateInfo(info)){
             System.out.println("更新成功");
         }else {
@@ -326,6 +375,10 @@ public class Server {
         Scanner sc = new Scanner(System.in);
         Integer id = sc.nextInt();
         info.setId(id);
+//        判断时候需要修改的记录是否在数据库中
+        if(!InfoIsExit(info)){
+            return;
+        }
 
         if (serverService.deleteInfo(info)) {
             System.out.println("删除成功");
@@ -335,6 +388,15 @@ public class Server {
 
     }
 
+
+
+    public boolean InfoIsExit(InfosModel info){
+        if (serverService.selectInfo(info).size() == 0) {
+            System.out.println("无此信息!");
+            return false;
+        }
+        return true;
+    }
 
 
 

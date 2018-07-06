@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class Index {
 
-    private ServerService service;
+    private ServerService service=new ServerService();
 
     /**
      * 显示前端的菜单
@@ -30,13 +30,15 @@ public class Index {
     public void start(){
 
         while(true){
+            System.out.println("-------------------------------------------------");
             System.out.println("请选择你需要查看的分类：");
             System.out.println("1.招聘信息\t\t  5.招商引资\t   9.车辆信息");
             System.out.println("2.培训信息\t\t  6.公寓信息\t  10.出售信息");
             System.out.println("3.房屋信息\t\t  7.求职信息\t  11.寻找启示");
             System.out.println("4.求购信息\t\t  8.家教信息\t");
-
             System.out.println("0.返回上一级");
+            System.out.println("-------------------------------------------------");
+
             Scanner in = new Scanner(System.in);
             int chooseNum = in.nextInt();
 
@@ -58,6 +60,9 @@ public class Index {
         InfosModel info = new InfosModel();
         info.setType(String.valueOf(type));
         List<InfosModel> infos = service.selectInfo(info);
+        if (infos.size() == 0) {
+            return;
+        }
         for(InfosModel temp:infos){
 //            System.out.println(temp.toString());
             System.out.println("信息ID:" + temp.getId() + "\t信息类别：" + temp.getType() + "\t标题："

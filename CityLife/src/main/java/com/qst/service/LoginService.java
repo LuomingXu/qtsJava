@@ -25,7 +25,7 @@ public class LoginService {
         user.setUserName(userName);
         boolean isSuccess=false;
         List<UserModel>  userSelecteds = new ServerService().selectUser(user);
-        if(userSelecteds.size()<0){
+        if(userSelecteds.size()==0){
             return null;
         }
         UserModel  userSelected = new ServerService().selectUser(user).get(0);
