@@ -1,14 +1,10 @@
 package com.qst;
 
 import com.qst.Dao.DAO;
-import com.qst.Dao.LogDao;
-import com.qst.Dao.UserDao;
 import com.qst.model.InfosModel;
 import com.qst.model.LogModel;
-import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
 
-import java.util.List;
 
 public class mian
 {
@@ -16,32 +12,7 @@ public class mian
     {
         System.out.println("hello world");
         System.out.println(PwdUtil.getPbkdf2HashLength());
-
-        UserModel model = new UserModel();
-        model.setUserName("123");
-        List<UserModel> lists;
-        lists=UserDao.getModel(UserDao.MapperID.selectByPrimaryKey, model);
-        System.out.println("size: "+lists.size());
-
-//        try
-//        {
-//            model.setUserName("345");
-//            model.setPassword(PwdUtil.createHash("345"));
-//            model.setNickName("345");
-//            System.out.println(UserDao.setModel(UserDao.MapperID.insertSelective, model));
-//        }
-//        catch(Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-
-        lists = UserDao.getModel(UserDao.MapperID.selectAll, null);
-
-        for (UserModel item : lists)
-        {
-            System.out.println(item);
-        }
-
+        
         try
         {
             LogModel model1 = new LogModel();
