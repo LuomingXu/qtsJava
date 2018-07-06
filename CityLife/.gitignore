@@ -36,3 +36,6 @@ buildNumber.properties
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
+/src/main/java/com/qst/Dao/InfosDao.java
+/src/main/java/com/qst/Dao/LogDao.java
+/src/main/java/com/qst/Dao/UserDao.java
