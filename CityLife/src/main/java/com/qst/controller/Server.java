@@ -5,6 +5,7 @@ import com.qst.model.LogModel;
 import com.qst.service.LogService;
 import com.qst.service.ServerService;
 import com.qst.model.UserModel;
+import com.qst.utils.LogUtils;
 import com.qst.utils.PwdUtil;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +65,7 @@ public class Server {
                     deleteUser();
                     break;
                 case 5:
+                    showLog();
                     break;
                 case 6:
                     addReleaseInfo();
@@ -404,7 +406,10 @@ public class Server {
      * 显示日志
      */
     public void showLog() {
-
+        List<String> logs = LogUtils.logRead();
+        for (String log : logs) {
+            System.out.println(log);
+        }
     }
 
 
