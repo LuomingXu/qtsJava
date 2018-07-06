@@ -1,6 +1,6 @@
 package com.qst.service;
 
-import com.qst.Dao.UserDao;
+import com.qst.Dao.DAO;
 import com.qst.model.InfosModel;
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
@@ -26,10 +26,12 @@ public class ServerService {
      */
     public boolean createUser(UserModel user){
 
-        if(UserDao.setModel(UserDao.MapperID.insertSelective, user)>0){
+//        if(UserDao.setModel(UserDao.MapperID.insertSelective, user)>0){
+//            return true;
+//        }
+        if(DAO.setModel(DAO.TableName.userinfo,DAO.UserMapperID.insertSelective.toString(),user)>0){
             return true;
         }
-
         return false;
     }
 
@@ -39,7 +41,7 @@ public class ServerService {
      * @return
      */
     public boolean updateUser(UserModel user){
-        if (UserDao.setModel(UserDao.MapperID.updateByPrimaryKeySelective, user) > 0) {
+        if (DAO.setModel(DAO.TableName.userinfo, DAO.UserMapperID.updateByPrimaryKeySelective.toString(), user) > 0) {
             return true;
         }
         return false;
@@ -51,7 +53,7 @@ public class ServerService {
      * @return
      */
     public boolean deleteUser(UserModel user){
-        if (UserDao.setModel(UserDao.MapperID.deleteByPrimaryKey, user) > 0) {
+        if (DAO.setModel(DAO.TableName.userinfo, DAO.UserMapperID.deleteByPrimaryKey.toString(), user) > 0) {
             return true;
         }
         return false;
@@ -65,14 +67,56 @@ public class ServerService {
      */
     public List<UserModel> selectUser(UserModel user){
         if(user.getUserName()==null){
-            return UserDao.getModel(UserDao.MapperID.selectAll, user);
+            return DAO.getModel(DAO.TableName.userinfo,DAO.UserMapperID.selectAll.toString(), user);
         }
-        return UserDao.getModel(UserDao.MapperID.selectByPrimaryKey, user);
+        return DAO.getModel(DAO.TableName.userinfo,DAO.UserMapperID.selectByPrimaryKey.toString(), user);
     }
 
 
-    public List<InfosModel> selectUser(){
-        return null;
+    /**
+     * 查找信息
+     * @param info
+     * @return
+     */
+    public List<InfosModel> selectInfo(InfosModel info){
+
+//        return InfosDao.selectModel(InfosDao.MapperID.selectByType, info);
+        return DAO.getModel(DAO.TableName.infos,DAO.InfosMapperID.selectByType.toString(),info);
+    }
+
+    /**
+     * 添加信息
+     * @return
+     */
+    public boolean createInfo(InfosModel info){
+
+        if (DAO.setModel(DAO.TableName.infos,DAO.InfosMapperID.insertSelective.toString(), info) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 更新信息
+     * @return
+     */
+    public boolean updateInfo(InfosModel info){
+        if (DAO.setModel(DAO.TableName.infos,DAO.InfosMapperID.updateByPrimaryKeySelective.toString(), info) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean deleteInfo(InfosModel info){
+        if (DAO.setModel(DAO.TableName.infos,DAO.InfosMapperID.deleteByPrimaryKey.toString(), info) > 0) {
+            return true;
+        }
+        return false;
     }
 
 
