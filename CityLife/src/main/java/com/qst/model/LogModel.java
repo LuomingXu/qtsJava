@@ -63,4 +63,9 @@ public class LogModel
                 ", deletedBy='" + deletedBy + '\'' +
                 '}';
     }
+
+    public String logFormat()
+    {
+        return String.format("%s#%s#%s#%s", id, deleteDate, deletedUsername, deletedBy);
+    }
 }
