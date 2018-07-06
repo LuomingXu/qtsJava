@@ -11,10 +11,13 @@ import java.util.Scanner;
  * @author: syun
  * @create: 2018-07-05 14:53
  */
-public class Login {
+public class Login{
 
+    private UserModel user=null;
+    public void programLogin(UserModel user){
 
-    public void programLogin(){
+        this.user=user;
+
         System.out.println("\t--------------------------");
         System.out.println("\t-        欢迎登陆本系统                    -");
         System.out.println("\t--------------------------");
@@ -24,11 +27,7 @@ public class Login {
         int chooseNum = in.nextInt();
 
 
-        /*
-         * 选择登陆前台，后台
-         */
-//        Index index = new Index();
-//        Server main = new Server();
+
         while (chooseNum!=3){
             switch (chooseNum) {
                 case 1:// 登陆前台
@@ -56,6 +55,12 @@ public class Login {
      */
     public boolean mainLogin(){
 
+        //若是已有用户,则不进入下面验证
+        if(user!=null){
+            new Server().startBack(user);
+            return true;
+        }
+
         String name = new String();
         String pwd = new String();
 
@@ -65,11 +70,12 @@ public class Login {
         System.out.print("密码:");
         pwd = sc.nextLine();
         UserModel user = new LoginService().userServerLogin(name, pwd);
+
         if(user==null){
             System.out.println("登录失败,账号或密码错误!");
         }else {
             System.out.println("用户:" + user.getNickName() + "登录成功");
-            new Server().startBack();
+            new Server().startBack(user);
         }
 
         return true;
@@ -81,7 +87,7 @@ public class Login {
      * @param args
      */
     public static void main(String[] args) {
-        new Login().programLogin();
+        new Login().programLogin(null);
     }
 
 

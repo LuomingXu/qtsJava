@@ -27,7 +27,7 @@ public class Server {
     /**
      * 后台能够操作的菜单(实现的功能)
      */
-    public void startBack() {
+    public void startBack(UserModel user) {
         int chooseNum = 0;
 
         while(chooseNum!=-1){
@@ -61,7 +61,7 @@ public class Server {
                     addReleaseInfo();
                     break;
                 case 7:
-
+                    searchInfoAll();
                     break;
                 case 8:
                     searchInfo();
@@ -72,6 +72,11 @@ public class Server {
                 case 10:
                     deleteInfo();
                     break;
+                case 0:
+                    new Login().programLogin(user);
+                    //退出此方法
+                    return;
+
 
                     default:break;
 
@@ -87,7 +92,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        new Server().startBack();
+        new Server().startBack(null);
     }
 
 
@@ -202,8 +207,18 @@ public class Server {
         System.out.println("输入需要查找的类型");
         Scanner sc = new Scanner(System.in);
         String type = sc.nextLine();
-
         info.setType(type);
+        List<InfosModel> Infos = serverService.selectInfo(info);
+        for (InfosModel temp : Infos) {
+            System.out.println(temp.toString());
+        }
+    }
+
+    /**
+     * 查询所有信息
+     */
+    public void searchInfoAll(){
+        InfosModel info = new InfosModel();
         List<InfosModel> Infos = serverService.selectInfo(info);
         for (InfosModel temp : Infos) {
             System.out.println(temp.toString());

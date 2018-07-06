@@ -2,6 +2,7 @@ package com.qst.service;
 
 import com.qst.Dao.DAO;
 import com.qst.model.InfosModel;
+import com.qst.model.LogModel;
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
 import org.junit.jupiter.api.Test;
@@ -81,6 +82,10 @@ public class ServerService {
     public List<InfosModel> selectInfo(InfosModel info){
 
 //        return InfosDao.selectModel(InfosDao.MapperID.selectByType, info);
+        System.out.println(info.toString());
+        if(info.getType()==null){
+            return DAO.getModel(DAO.TableName.infos, DAO.InfosMapperID.selectAll.toString(), info);
+        }
         return DAO.getModel(DAO.TableName.infos,DAO.InfosMapperID.selectByType.toString(),info);
     }
 
@@ -119,6 +124,18 @@ public class ServerService {
         return false;
     }
 
+    /**
+     * 添加日志记录
+     * @return
+     */
+    public boolean addLog(LogModel log){
+        if(DAO.setModel(DAO.TableName.deleteLog,DAO.LogMapperID.insertSelective.toString(),log)>0){
+            return true;
+        }
+        return false;
+    }
+
+
 
 
     @Test
@@ -131,6 +148,7 @@ public class ServerService {
 //        updateUser(user);
 //        deleteUser(user);
     }
+
 
 
 }
