@@ -17,7 +17,7 @@
   <sql id="Base_Column_List">
     id, type, title, content, linkman, phone, email, date, state, payfor, is_del
   </sql>
-  <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByType" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from infos

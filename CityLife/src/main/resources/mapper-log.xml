@@ -10,12 +10,12 @@
   <sql id="Base_Column_List">
     id, delete_date, deleted_username, deleted_by
   </sql>
-  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from deleteLog
   </select>
-  <select id="selectByDeletedUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByDeletedUsername" parameterType="com.qst.model.LogModel" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from deleteLog

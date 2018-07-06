@@ -125,7 +125,7 @@ public class InfosModel {
     @Override
     public String toString()
     {
-        return "XjyModel{" +
+        return "InfosModel{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", title='" + title + '\'' +
