@@ -24,6 +24,9 @@ public class DAO
     private final static String LOG_MYBATIS_CONFIG_XML_PATH = "config-log.xml";
     private final static String INFOS_MYBATIS_CONFIG_XML_PATH = "config-infos.xml";
 
+    /**
+     * 对应数据库的表名, 完全一致
+     */
     public enum TableName
     {
         userinfo,
@@ -31,6 +34,9 @@ public class DAO
         infos
     }
 
+    /**
+     * 对应mapper-user.xml里面的id
+     */
     public enum UserMapperID
     {
         selectAll,
@@ -40,6 +46,9 @@ public class DAO
         updateByPrimaryKeySelective
     }
 
+    /**
+     * 对应mapper-log.xml里面的id
+     */
     public enum LogMapperID
     {
         selectAll,
@@ -47,15 +56,25 @@ public class DAO
         insertSelective
     }
 
+    /**
+     * 对应mapper-infos.xml里面的id
+     */
     public enum InfosMapperID
     {
         //还需要添加几个模糊查询
+        selectAll,
         selectByType,
         deleteByPrimaryKey,
         insertSelective,
         updateByPrimaryKeySelective
     }
 
+    /**
+     * 根据表名获取不同的SqlSession
+     *
+     * @param tableName
+     * @return
+     */
     private static SqlSession getSession(TableName tableName)
     {
         InputStream inputStream;
@@ -95,6 +114,15 @@ public class DAO
     }
 
 
+    /**
+     * sql的select语句都在这边处理
+     *
+     * @param tableName  需要操作的数据的表的名称
+     * @param mapperID   对应xml文件里面id
+     * @param paramModel 参数类
+     * @param <T>        参数类的class, 全部都在model包里面
+     * @return 参数类的一个list集合
+     */
     public static <T> List<T> getModel(TableName tableName, String mapperID, T paramModel)
     {
         List<T> models = null;
@@ -105,6 +133,9 @@ public class DAO
 
             if (session != null)
             {
+                /**
+                 * 如果直接是selectAll就直接返回
+                 */
                 if (mapperID.equals("selectAll"))
                 {
                     models = session.selectList(mapperID);
@@ -119,7 +150,7 @@ public class DAO
                         switch (userMapID)
                         {
                             case selectByPrimaryKey:
-                                models = session.selectList(mapperID,paramModel);
+                                models = session.selectList(mapperID, paramModel);
                                 break;
                             default:
                                 throw new Exception("No suck choice in this method. ");
@@ -131,7 +162,7 @@ public class DAO
                         switch (LogMapID)
                         {
                             case selectByDeletedUsername:
-                                models = session.selectList(mapperID,paramModel);
+                                models = session.selectList(mapperID, paramModel);
                                 break;
                             default:
                                 throw new Exception("No suck choice in this method. ");
@@ -143,7 +174,7 @@ public class DAO
                         switch (InfosMapID)
                         {
                             case selectByType:
-                                models = session.selectList(mapperID);
+                                models = session.selectList(mapperID, paramModel);
                                 break;
                             default:
                                 throw new Exception("No suck choice in this method. ");
@@ -163,6 +194,15 @@ public class DAO
         return models;
     }
 
+    /**
+     * sql的insert, delete, update方法, 全部都通过这个方法实现
+     *
+     * @param tableName  需要操作的数据的表的名称
+     * @param mapperID   对应xml文件里面id
+     * @param paramModel 参数类
+     * @param <T>        参数类的class, 全部都在model包里面
+     * @return affected rows
+     */
     public static <T> int setModel(TableName tableName, String mapperID, T paramModel)
     {
         int count = 0;
@@ -229,9 +269,13 @@ public class DAO
 
                 //operation could be done, then commit
                 if (count > 0)
+                {
                     session.commit();
+                }
                 else
+                {
                     throw new Exception("Operation could't be done. ");
+                }
             }
 
             return count;
