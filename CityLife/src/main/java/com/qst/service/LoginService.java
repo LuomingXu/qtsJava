@@ -2,10 +2,10 @@ package com.qst.service;
 
 import com.qst.model.UserModel;
 import com.qst.utils.PwdUtil;
-import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 /*
  * @description: 登录验证Dao
@@ -24,6 +24,10 @@ public class LoginService {
         UserModel user = new UserModel();
         user.setUserName(userName);
         boolean isSuccess=false;
+        List<UserModel>  userSelecteds = new ServerService().selectUser(user);
+        if(userSelecteds.size()<0){
+            return null;
+        }
         UserModel  userSelected = new ServerService().selectUser(user).get(0);
         try {
             if(userSelected==null){
@@ -35,8 +39,6 @@ public class LoginService {
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
-        System.out.println(user.toString());
-
         if(isSuccess){
             return userSelected;
         }

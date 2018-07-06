@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Login{
 
     private UserModel user=null;
+
     public void programLogin(UserModel user){
 
         this.user=user;
@@ -61,8 +62,8 @@ public class Login{
             return true;
         }
 
-        String name = new String();
-        String pwd = new String();
+        String name;
+        String pwd ;
 
         System.out.print("用户名:");
         Scanner sc = new Scanner(System.in);
@@ -73,12 +74,13 @@ public class Login{
 
         if(user==null){
             System.out.println("登录失败,账号或密码错误!");
+
         }else {
-            System.out.println("用户:" + user.getNickName() + "登录成功");
+            System.out.println("用户: " + user.getNickName() + "登录成功");
             new Server().startBack(user);
         }
 
-        return true;
+        return false;
     }
 
 

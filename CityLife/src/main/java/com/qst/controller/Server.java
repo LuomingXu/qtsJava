@@ -38,7 +38,6 @@ public class Server {
             System.out.println("4.删除用户		 9.设置信息");
             System.out.println("5.显示删除日志	10.删除信息");
             System.out.println("---按0返回上一级---");
-            System.out.println();
             Scanner in = new Scanner(System.in);
             chooseNum = in.nextInt();
 
@@ -134,14 +133,15 @@ public class Server {
      * 查找用户信息
      */
     public void searchUser(){
-        System.out.print("输入需要查找的name:");
+        System.out.print("输入需要查找的用户的账号:");
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
         UserModel user = new UserModel();
         user.setUserName(name);
         List<UserModel> userList = serverService.selectUser(user);
         for(UserModel temp:userList){
-            System.out.println(temp.toString());
+            System.out.println("账号: "+temp.getUserName()+"\t昵称: "+temp.getNickName()+"\t 创建日期"+temp.getCreatetime());
+//            System.out.println(temp.toString());
         }
     }
 
@@ -152,7 +152,8 @@ public class Server {
         UserModel user = new UserModel();
         List<UserModel> userList = serverService.selectUser(user);
         for(UserModel temp:userList){
-            System.out.println(temp.toString());
+            System.out.println("账号: "+temp.getUserName()+"\t昵称: "+temp.getNickName()+"\t 创建日期"+temp.getCreatetime());
+//            System.out.println(temp.toString());
         }
     }
 
@@ -210,7 +211,11 @@ public class Server {
         info.setType(type);
         List<InfosModel> Infos = serverService.selectInfo(info);
         for (InfosModel temp : Infos) {
-            System.out.println(temp.toString());
+            System.out.println("信息ID:" + temp.getId() + "\t信息类别：" + temp.getType() + "\t标题："
+                    + temp.getTitle() + "\t内容：" + temp.getContent() + "\t联系人:" + temp.getLinkman()
+                    + "\t联系电话：" + temp.getPhone() + "\t邮箱：" + temp.getEmail() + "\t付费状态："
+                    + temp.getPayfor() + "\t审核状态：" + temp.getState());
+//            System.out.println(temp.toString());
         }
     }
 
@@ -221,7 +226,11 @@ public class Server {
         InfosModel info = new InfosModel();
         List<InfosModel> Infos = serverService.selectInfo(info);
         for (InfosModel temp : Infos) {
-            System.out.println(temp.toString());
+            System.out.println("信息ID:" + temp.getId() + "\t信息类别：" + temp.getType() + "\t标题："
+                    + temp.getTitle() + "\t内容：" + temp.getContent() + "\t联系人:" + temp.getLinkman()
+                    + "\t联系电话：" + temp.getPhone() + "\t邮箱：" + temp.getEmail() + "\t付费状态："
+                    + temp.getPayfor() + "\t审核状态：" + temp.getState());
+//            System.out.println(temp.toString());
         }
     }
 

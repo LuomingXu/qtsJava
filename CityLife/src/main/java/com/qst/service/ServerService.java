@@ -82,7 +82,7 @@ public class ServerService {
     public List<InfosModel> selectInfo(InfosModel info){
 
 //        return InfosDao.selectModel(InfosDao.MapperID.selectByType, info);
-        System.out.println(info.toString());
+//        System.out.println(info.toString());
         if(info.getType()==null){
             return DAO.getModel(DAO.TableName.infos, DAO.InfosMapperID.selectAll.toString(), info);
         }
