@@ -1,5 +1,6 @@
 package com.qst;
 
+import com.qst.Dao.DAO;
 import com.qst.Dao.LogDao;
 import com.qst.Dao.UserDao;
 import com.qst.model.LogModel;
@@ -47,7 +48,8 @@ public class mian
             model1.setDeletedBy("345");
             model1.setDeletedUsername("123");
             //System.out.println("logdao size: "+LogDao.insertModel(LogDao.MapperID.insertSelective, model1));
-            System.out.println(LogDao.selectModel(LogDao.MapperID.selectAll,null));
+           // System.out.println(LogDao.selectModel(LogDao.MapperID.selectAll,null));
+            System.out.println(DAO.getModel(DAO.TableName.userinfo,DAO.UserMapperID.selectAll.toString(),model1));
         }
         catch(Exception e)
         {
