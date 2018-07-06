@@ -44,12 +44,4 @@ public class LoginService {
     }
 
 
-    @Test
-    public void test(){
-        UserModel user= new LoginService().userServerLogin("syun1","123");
-        System.out.println("s");
-    }
-
-
-
 }
