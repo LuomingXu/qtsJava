@@ -17,6 +17,12 @@
   <sql id="Base_Column_List">
     id, type, title, content, linkman, phone, email, date, state, payfor, is_del
   </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from infos
+    where is_del = 0
+  </select>
   <select id="selectByType" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
