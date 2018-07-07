@@ -9,6 +9,7 @@
 
 package com.qst.Dao;
 
+import com.sun.xml.internal.ws.api.pipe.NextAction;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -69,6 +70,13 @@ public class DAO
         updateByPrimaryKeySelective
     }
 
+    private enum sqlOperation
+    {
+        insert,
+        delete,
+        update
+    }
+
     /**
      * 根据表名获取不同的SqlSession
      *
@@ -113,6 +121,168 @@ public class DAO
         return null;
     }
 
+    /**
+     * tablename是否匹配对应的mapperID
+     *
+     * @param tableName 数据的表名
+     * @param mapperID  对应xml的id
+     * @param <T>       enum的泛型
+     * @return 匹配返回true
+     * @throws Exception
+     */
+    private static <T> boolean isTableMatchItsMapperId(TableName tableName, T mapperID) throws Exception
+    {
+        switch (tableName)
+        {
+            case userinfo:
+                return mapperID.getClass().getName().equals(UserMapperID.class.getName());
+            case deleteLog:
+                return mapperID.getClass().getName().equals(LogMapperID.class.getName());
+            case infos:
+                return mapperID.getClass().getName().equals(InfosMapperID.class.getName());
+            default:
+                throw new Exception("No such table");
+        }
+    }
+
+    /**
+     * 获取mapperID的操作是update, insert, delete的类型
+     *
+     * @param mapperID 对应xml的id
+     * @param <T>      enum的泛型
+     * @return 对应的sql操作
+     * @throws Exception
+     */
+    private static <T> sqlOperation getSqlOperation(T mapperID) throws Exception
+    {
+        String temp = mapperID.toString().substring(0, 1);
+        if (temp.equals("i"))
+        {
+            return sqlOperation.insert;
+        }
+        else if (temp.equals("u"))
+        {
+            return sqlOperation.update;
+        }
+        else if (temp.equals("d"))
+        {
+            return sqlOperation.delete;
+        }
+        else
+        {
+            throw new Exception("no such sql operation");
+        }
+    }
+
+    /**
+     * sql的select语句都在这边处理
+     *
+     * @param tableName  需要操作的数据的表的名称
+     * @param mapperID   对应xml文件里面id
+     * @param paramModel 参数类
+     * @param <T>        参数类的class, 全部都在model包里面, 包含一个enum
+     * @return 参数类的一个list集合
+     */
+    public static <T> List<T> getModelRelease(TableName tableName, T mapperID, T paramModel)
+    {
+        List<T> models = null;
+
+        //判断参数是否合法
+        try
+        {
+            if (paramModel == null)
+            {
+                throw new Exception("paramModel could not be null. ");
+            }
+
+            if (!isTableMatchItsMapperId(tableName, mapperID))
+            {
+                throw new Exception("Table name is not match its mapper id. ");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        try
+        {
+            SqlSession session = getSession(tableName);
+
+            if (session != null)
+            {
+                models = session.selectList(mapperID.toString(), paramModel);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return models;
+    }
+
+    /**
+     * sql的insert, delete, update方法, 全部都通过这个方法实现
+     *
+     * @param tableName  需要操作的数据的表的名称
+     * @param mapperID   对应xml文件里面id
+     * @param paramModel 参数类
+     * @param <T>        参数类的class, 全部都在model包里面, 包含一个enum
+     * @return affected rows
+     */
+    public static <T> int setModelRelease(TableName tableName, T mapperID, T paramModel)
+    {
+        //判断参数是否合法
+        try
+        {
+            if (paramModel == null)
+            {
+                throw new Exception("paramModel could not be null. ");
+            }
+
+            if (!isTableMatchItsMapperId(tableName, mapperID))
+            {
+                throw new Exception("Table name is not match its mapper id. ");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return 0;
+        }
+
+        int count = 0;
+        try
+        {
+            SqlSession session = getSession(tableName);
+
+            if (session != null)
+            {
+                switch (getSqlOperation(mapperID))
+                {
+                    case update:
+                        count = session.update(mapperID.toString(), paramModel);
+                        break;
+                    case delete:
+                        count = session.delete(mapperID.toString(), paramModel);
+                        break;
+                    case insert:
+                        count = session.insert(mapperID.toString(), paramModel);
+                        break;
+                    default:
+                        throw new Exception("No such choice in mapper.xml");
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
 
     /**
      * sql的select语句都在这边处理
@@ -125,6 +295,8 @@ public class DAO
      */
     public static <T> List<T> getModel(TableName tableName, String mapperID, T paramModel)
     {
+        System.err.println("This method is not recommended");
+
         List<T> models = null;
 
         try
@@ -205,6 +377,9 @@ public class DAO
      */
     public static <T> int setModel(TableName tableName, String mapperID, T paramModel)
     {
+        System.err.println("This method is not recommended");
+
+
         int count = 0;
 
         try
